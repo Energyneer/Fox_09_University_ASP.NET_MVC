@@ -1,0 +1,25 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model DataAccess.Student
+
+@{
+    ViewData["Title"] = "Edit " + Model.FirstName + " " + Model.LastName + " profile";
+    Layout = "_Layout";
+}
+
+<form method="post" action="/Student/Edit">
+    <div class="form-group">
+        <input type="hidden" name="Id" value="@Model.Id" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label class="control-label">Name:</label>
+        <input name="FirstName" value="@Model.FirstName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label class="control-label">Description:</label>
+        <input name="LastName" value="@Model.LastName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Submit" class="btn btn-success" />
+    </div>
+</form>

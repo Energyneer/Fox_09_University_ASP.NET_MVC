@@ -1,0 +1,86 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model WebAPI.Dto.GroupByCourse
+
+@{
+    ViewData["Title"] = "Groups of courses: " + Model.CourseDisplayName;
+    Layout = "_Layout";
+}
+
+<h3>List of groups for course: @Model.CourseDisplayName</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Groups.FirstOrDefault().GroupName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Groups)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GroupName)
+                </td>
+                <td>
+                    <a class="btn btn-secondary" asp-controller="Group" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    <a class="btn btn-primary" asp-controller="Student" asp-action="Index" asp-route-id="@item.Id">Students</a>
+                    <button class="btn btn-danger" data-toggle="modal" data-target="@Html.Raw("#deleteGroup" + item.Id)">Delete</button>
+
+                    <div class="modal fade" id="@Html.Raw("deleteGroup" + item.Id)" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Delete group: @item.GroupName</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                </div>
+
+                                <div class="modal-body">
+                                    <p>Confirm delete:</p>
+                                    <form method="post" action="/Group/Delete/@item.Id">
+                                        <input type="hidden" value="@Model.CourseId" name="courseId" />
+                                        <input type="submit" value="Delete" class="btn btn-danger" />
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<button class="btn btn-primary" data-toggle="modal" data-target="#createGroup">Add Group</button>
+<a class="btn btn-light" asp-controller="Course" asp-action="Index">Back to Courses</a>
+
+<div class="modal fade" id="createGroup" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Create new group:</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <form method="post" action="/Group/Create">
+                    <div class="form-group">
+                        <label class="control-label">Name:</label>
+                        <input name="GroupName" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="CourseId" value="@Model.CourseId" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-success" />
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
