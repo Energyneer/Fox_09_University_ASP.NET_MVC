@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using DataAccess;
+﻿using Microsoft.AspNetCore.Mvc;
 using Service;
-using WebAPI.Dto;
+using DataAccess.ViewModel;
 
 namespace WebAPI.Controllers
 {
@@ -24,59 +17,42 @@ namespace WebAPI.Controllers
             this.studentService = studentService;
         }
 
-        // GET: Group
-        [Route("/Group/{id?}")]
-        public IActionResult Index(long? id)
+        [Route("/Group")]
+        public IActionResult Index(int? id)
         {
-            if (id != null)
+            if (id != null && id.Value > 0)
             {
-                return View(new GroupByCourse(
-                    groupService.GetGroupsByCourse(courseService.GetCourse(id.Value)), 
-                    courseService.GetCourse(id.Value).CourseName, 
-                    id.Value));
+                return View(groupService.GetGroupsByCourse(id.Value));
             }
-            return View(new GroupByCourse(groupService.GetGroup(), "all", 0));
+            return View(groupService.GetGroup());
         }
 
         [HttpPost]
         [Route("/Group/Create")]
-        //[ValidateAntiForgeryToken]
-        public IActionResult Create(string GroupName, long CourseId)
+        public IActionResult Create([Bind("GroupName,CourseId")] GroupViewModel groupView)
         {
-            Course course = courseService.GetCourse(CourseId);
-            Group group = new Group();
-            group.GroupName = GroupName;
-            group.Course = course;
-            groupService.InsertGroup(group);
-
-            return Redirect("/Group/" + CourseId);
+            groupService.InsertGroup(groupView);
+            return Redirect("/Group?id=" + groupView.CourseId);
         }
 
-        public IActionResult Edit(long? id)
+        public IActionResult Edit(int? id)
         {
             return View(groupService.GetGroup(id.Value));
         }
 
         [HttpPost]
         [Route("/Group/Edit")]
-        public IActionResult EditComfim([Bind("Id,GroupName")] Group group)
+        public IActionResult EditComfim([Bind("Id,GroupName,CourseId")] GroupViewModel groupView)
         {
-            groupService.UpdateGroup(group);
-            return Redirect("/Group");
+            groupService.UpdateGroup(groupView);
+            return Redirect("/Group?id=" + groupView.CourseId);
         }
 
-        // POST: Group/Delete/5
         [HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(long id, long courseId)
+        public IActionResult DeleteConfirmed(int id, int courseId)
         {
-            Group group = groupService.GetGroup(id);
-            if (group == null)
-                return RedirectToAction("Error", "Course", new { @message = "Wrong parameter: group ID" });
-            if (studentService.GetStudentsByGroup(group).Count() > 0)
-                return RedirectToAction("Error", "Course", new { @message = "Group is not empty! First delete all students." });
             groupService.DeleteGroup(id);
-            return Redirect("/Group/" + courseId);
+            return Redirect("/Group?id=" + courseId);
         }
     }
 }

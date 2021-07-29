@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using DataAccess;
+﻿using Microsoft.AspNetCore.Mvc;
 using Service;
-using WebAPI.Dto;
+using DataAccess.ViewModel;
 
 namespace WebAPI.Controllers
 {
@@ -20,7 +13,6 @@ namespace WebAPI.Controllers
             this.courseService = courseService;
         }
 
-        // GET: Course
         [Route("")]
         public IActionResult Index()
         {
@@ -35,36 +27,32 @@ namespace WebAPI.Controllers
             return View(errorModel);
         }
 
-        public IActionResult Edit(long? id)
+        public IActionResult Edit(int? id)
         {
             return View(courseService.GetCourse(id.Value));
         }
 
         [HttpPost]
         [Route("/Course/Edit")]
-        public IActionResult EditComfim([Bind("Id,CourseName,CourseDesc")] Course course)
+        public IActionResult EditComfim([Bind("Id,CourseName,CourseDesc")] CourseViewModel courseView)
         {
-            courseService.UpdateCourse(course);
+            courseService.UpdateCourse(courseView);
             return Redirect("/");
         }
 
-        //[Route("/Course/Create")]
-        //[ValidateAntiForgeryToken]
         [HttpPost]
-        public IActionResult Create([Bind("CourseName,CourseDesc")] Course course)
+        public IActionResult Create([Bind("CourseName,CourseDesc")] CourseViewModel courseView)
         {
             if (ModelState.IsValid)
             {
-                courseService.InsertCourse(course);
+                courseService.InsertCourse(courseView);
                 return RedirectToAction(nameof(Index));
             }
-            return View(course);
+            return View(courseView);
         }
 
-        // POST: Course/Delete/5
         [HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(long id)
+        public IActionResult DeleteConfirmed(int id)
         {
             courseService.DeleteCourse(id);
             return RedirectToAction(nameof(Index));

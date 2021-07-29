@@ -1,52 +1,68 @@
 ﻿using DataAccess;
+using DataAccess.ViewModel;
 using Repository;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service
 {
     public class StudentService : IStudentService
     {
+        public IRepository<Group> groupRepository;
         public IRepository<Student> studentRepository;
 
-        public StudentService(IRepository<Student> studentRepository)
+        public StudentService(IRepository<Group> groupRepository, IRepository<Student> studentRepository)
         {
+            this.groupRepository = groupRepository;
             this.studentRepository = studentRepository;
         }
 
-        public IEnumerable<Student> GetStudent()
+        public IEnumerable<StudentViewModel> GetStudent()
         {
-            return studentRepository.GetAll();
+            List<StudentViewModel> result = new List<StudentViewModel>();
+            foreach (Student student in studentRepository.GetAll(new Student()))
+            {
+                result.Add(new StudentViewModel(student.Id, student.FirstName, student.LastName, student.Group.Id));
+            }
+            return result;
         }
 
-        public Student GetStudent(long id)
+        public StudentViewModel GetStudent(int id)
         {
-            return studentRepository.Get(id);
+            Student student = studentRepository.Get(id);
+            return new StudentViewModel(student.Id, student.FirstName, student.LastName, student.Group.Id);
         }
 
-        public void InsertStudent(Student student)
+        public void InsertStudent(StudentViewModel studentView)
         {
+            Student student = new Student();
+            student.FirstName = studentView.FirstName;
+            student.LastName = studentView.LastName;
+            student.Group = groupRepository.Get(studentView.GroupId);
             studentRepository.Insert(student);
         }
 
-        public void UpdateStudent(Student student)
+        public void UpdateStudent(StudentViewModel studentView)
         {
+            Student student = studentRepository.Get(studentView.Id);
+            student.FirstName = studentView.FirstName;
+            student.LastName = studentView.LastName;
             studentRepository.Update(student);
         }
 
-        public void DeleteStudent(long id)
+        public void DeleteStudent(int id)
         {
-            Student student = GetStudent(id);
+            Student student = studentRepository.Get(id);
             studentRepository.Remove(student);
-            studentRepository.SaveChanges();
         }
 
-        public IEnumerable<Student> GetStudentsByGroup(Group group)
+        public IEnumerable<StudentViewModel> GetStudentsByGroup(int id)
         {
-            return studentRepository.GetAll().Where(item => item.Group == group);
+            List<StudentViewModel> result = new List<StudentViewModel>();
+            foreach (Student student in groupRepository.Get(id).Students)
+            {
+                result.Add(new StudentViewModel(student.Id, student.FirstName, student.LastName, student.Group.Id));
+            }
+            return result;
         }
     }
 }

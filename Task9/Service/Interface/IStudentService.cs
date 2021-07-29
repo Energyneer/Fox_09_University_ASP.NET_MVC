@@ -1,19 +1,15 @@
-﻿using DataAccess;
-using System;
+﻿using DataAccess.ViewModel;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service
 {
     public interface IStudentService
     {
-        IEnumerable<Student> GetStudent();
-        IEnumerable<Student> GetStudentsByGroup(Group group);
-        Student GetStudent(long id);
-        void InsertStudent(Student student);
-        void UpdateStudent(Student student);
-        void DeleteStudent(long id);
+        IEnumerable<StudentViewModel> GetStudent();
+        IEnumerable<StudentViewModel> GetStudentsByGroup(int id);
+        StudentViewModel GetStudent(int id);
+        void InsertStudent(StudentViewModel studentView);
+        void UpdateStudent(StudentViewModel studentView);
+        void DeleteStudent(int id);
     }
 }

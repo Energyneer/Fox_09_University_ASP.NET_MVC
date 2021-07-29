@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository
 {
@@ -19,11 +17,16 @@ namespace Repository
             this.context = context;
             entities = context.Set<T>();
         }
-        public IEnumerable<T> GetAll()
+        public IEnumerable<T> GetAll(T t)
         {
+            if (t is Group)
+                return entities.Include("Course").AsEnumerable();
+            if (t is Student)
+                return entities.Include("Group").AsEnumerable();
+
             return entities.AsEnumerable();
         }
-        public T Get(long id)
+        public T Get(int id)
         {
             return entities.SingleOrDefault(s => s.Id == id);
         }

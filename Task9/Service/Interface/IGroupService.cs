@@ -1,19 +1,15 @@
-﻿using DataAccess;
-using System;
+﻿using DataAccess.ViewModel;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service
 {
     public interface IGroupService
     {
-        IEnumerable<Group> GetGroup();
-        IEnumerable<Group> GetGroupsByCourse(Course course);
-        Group GetGroup(long id);
-        void InsertGroup(Group group);
-        void UpdateGroup(Group group);
-        void DeleteGroup(long id);
+        IEnumerable<GroupViewModel> GetGroup();
+        IEnumerable<GroupViewModel> GetGroupsByCourse(int id);
+        GroupViewModel GetGroup(int id);
+        void InsertGroup(GroupViewModel groupView);
+        void UpdateGroup(GroupViewModel groupView);
+        void DeleteGroup(int id);
     }
 }

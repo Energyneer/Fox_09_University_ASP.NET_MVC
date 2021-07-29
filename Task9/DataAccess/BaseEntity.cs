@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DataAccess
+﻿namespace DataAccess
 {
     public class BaseEntity
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
     }
 }

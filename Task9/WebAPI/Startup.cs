@@ -27,7 +27,7 @@ namespace WebAPI
         {
             services.AddControllersWithViews();
             services.AddDbContext<ApplicationContext>(options =>
-            options.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=task9;Trusted_Connection=True;"));
+            options.UseLazyLoadingProxies().UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=task9;Trusted_Connection=True;"));
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<ICourseService, CourseService>();
             services.AddTransient<IGroupService, GroupService>();
@@ -36,6 +36,7 @@ namespace WebAPI
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            env.EnvironmentName = "Production";
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

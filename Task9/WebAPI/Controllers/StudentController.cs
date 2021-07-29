@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using DataAccess;
+﻿using Microsoft.AspNetCore.Mvc;
 using Service;
-using WebAPI.Dto;
+using DataAccess.ViewModel;
 
 namespace WebAPI.Controllers
 {
@@ -22,58 +15,42 @@ namespace WebAPI.Controllers
             this.studentService = studentService;
         }
 
-        // GET: Student
-        [Route("/Student/{id?}")]
-        public IActionResult Index(long? id)
+        [Route("/Student")]
+        public IActionResult Index(int? id)
         {
-            if (id != null)
+            if (id != null && id.Value > 0)
             {
-                Group group = groupService.GetGroup(id.Value);
-                IEnumerable<Student> students = studentService.GetStudentsByGroup(group);
-                string groupDisplayName = group.GroupName;
-                long groupId = group.Id;
-                StudentByGroup sbg = new StudentByGroup(students, groupDisplayName, groupId);
-                return View(sbg);
+                return View(studentService.GetStudentsByGroup(id.Value));
             }
-            return View(new StudentByGroup(studentService.GetStudent(), "All", 0));
+            return View(studentService.GetStudent());
         }
 
         [HttpPost]
         [Route("/Student/Create")]
-        //[ValidateAntiForgeryToken]
-        public IActionResult Create(string FirstName, string LastName, long GroupId)
+        public IActionResult Create([Bind("FirstName,LastName,GroupId")] StudentViewModel studentView)
         {
-            Group group = groupService.GetGroup(GroupId);
-
-            Student student = new Student();
-            student.FirstName = FirstName;
-            student.LastName = LastName;
-            student.Group = group;
-            studentService.InsertStudent(student);
-
-            return Redirect("/Student/" + GroupId);
+            studentService.InsertStudent(studentView);
+            return Redirect("/Student?id=" + studentView.GroupId);
         }
 
-        public IActionResult Edit(long? id)
+        public IActionResult Edit(int? id)
         {
             return View(studentService.GetStudent(id.Value));
         }
 
         [HttpPost]
         [Route("/Student/Edit")]
-        public IActionResult EditComfim([Bind("Id,FirstName,LastName")] Student student)
+        public IActionResult EditComfim([Bind("Id,FirstName,LastName")] StudentViewModel studentView)
         {
-            studentService.UpdateStudent(student);
-            return Redirect("/Student");
+            studentService.UpdateStudent(studentView);
+            return Redirect("/Student?id=" + studentView.GroupId);
         }
 
-        // POST: Student/Delete/5
         [HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(long id, long GroupId)
+        public IActionResult DeleteConfirmed(int id, int GroupId)
         {
             studentService.DeleteStudent(id);
-            return Redirect("/Student/" + GroupId);
+            return Redirect("/Student?id=" + GroupId);
         }
     }
 }
