@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Service;
-using DataAccess.ViewModel;
+using Service.ViewModel;
+using System;
 
 namespace WebAPI.Controllers
 {
@@ -45,6 +46,7 @@ namespace WebAPI.Controllers
         public IActionResult EditComfim([Bind("Id,GroupName,CourseId")] GroupViewModel groupView)
         {
             groupService.UpdateGroup(groupView);
+            Console.WriteLine(">edit");
             return Redirect("/Group?id=" + groupView.CourseId);
         }
 

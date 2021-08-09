@@ -1,6 +1,6 @@
 ﻿using DataAccess;
-using DataAccess.ViewModel;
 using Repository;
+using Service.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,8 +21,9 @@ namespace Service
         public IEnumerable<GroupViewModel> GetGroup()
         {
             List<GroupViewModel> result = new List<GroupViewModel>();
-            foreach (Group group in groupRepository.GetAll(new Group()))
+            foreach (Group group in groupRepository.GetAll())
             {
+                //Console.WriteLine(">> " + group.Id + " " + group.GroupName + " " + group.CourseId + " " + group.Course);
                 result.Add(new GroupViewModel(group.Id, group.GroupName, group.Course.Id));
             }
             return result;
@@ -56,7 +57,7 @@ namespace Service
             {
                 throw new ArgumentException("Students list is not empty!");
             }
-            groupRepository.Remove(group);
+            groupRepository.Delete(group);
         }
 
         public IEnumerable<GroupViewModel> GetGroupsByCourse(int id)

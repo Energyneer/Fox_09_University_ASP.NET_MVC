@@ -1,4 +1,6 @@
-﻿namespace DataAccess.ViewModel
+﻿using DataAccess;
+
+namespace Service.ViewModel
 {
     public class GroupViewModel : BaseEntity
     {

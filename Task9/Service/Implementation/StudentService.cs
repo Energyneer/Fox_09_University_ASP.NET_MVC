@@ -1,6 +1,6 @@
 ﻿using DataAccess;
-using DataAccess.ViewModel;
 using Repository;
+using Service.ViewModel;
 using System.Collections.Generic;
 
 namespace Service
@@ -19,7 +19,7 @@ namespace Service
         public IEnumerable<StudentViewModel> GetStudent()
         {
             List<StudentViewModel> result = new List<StudentViewModel>();
-            foreach (Student student in studentRepository.GetAll(new Student()))
+            foreach (Student student in studentRepository.GetAll())
             {
                 result.Add(new StudentViewModel(student.Id, student.FirstName, student.LastName, student.Group.Id));
             }
@@ -52,7 +52,7 @@ namespace Service
         public void DeleteStudent(int id)
         {
             Student student = studentRepository.Get(id);
-            studentRepository.Remove(student);
+            studentRepository.Delete(student);
         }
 
         public IEnumerable<StudentViewModel> GetStudentsByGroup(int id)

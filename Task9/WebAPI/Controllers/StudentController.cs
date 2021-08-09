@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Service;
-using DataAccess.ViewModel;
+using Service.ViewModel;
 
 namespace WebAPI.Controllers
 {

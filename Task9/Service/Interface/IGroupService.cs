@@ -1,4 +1,4 @@
-﻿using DataAccess.ViewModel;
+﻿using Service.ViewModel;
 using System.Collections.Generic;
 
 namespace Service

@@ -1,8 +1,8 @@
-﻿using DataAccess.ViewModel;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using NUnit.Framework;
 using Service;
+using Service.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;

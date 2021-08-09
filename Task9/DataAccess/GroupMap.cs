@@ -8,7 +8,7 @@ namespace DataAccess
         {
             entityBuilder.HasKey(item => item.Id);
             entityBuilder.Property(item => item.GroupName).IsRequired();
-            entityBuilder.HasOne(item => item.Course).WithMany(item => item.Groups).IsRequired();
+            entityBuilder.HasOne(item => item.Course).WithMany(item => item.Groups).IsRequired();//.HasForeignKey(item => item.CourseId);
             entityBuilder.HasMany(item => item.Students).WithOne(item => item.Group);
         }
     }

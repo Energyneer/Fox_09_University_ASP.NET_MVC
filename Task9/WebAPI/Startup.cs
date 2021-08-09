@@ -29,6 +29,8 @@ namespace WebAPI
             services.AddDbContext<ApplicationContext>(options =>
             options.UseLazyLoadingProxies().UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=task9;Trusted_Connection=True;"));
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            //services.AddTransient<I>
+
             services.AddTransient<ICourseService, CourseService>();
             services.AddTransient<IGroupService, GroupService>();
             services.AddTransient<IStudentService, StudentService>();

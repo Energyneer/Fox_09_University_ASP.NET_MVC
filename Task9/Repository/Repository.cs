@@ -9,22 +9,18 @@ namespace Repository
     public class Repository<T> : IRepository<T> where T : BaseEntity
     {
         private readonly ApplicationContext context;
-        private readonly DbSet<T> entities;
-        string errorMessage = string.Empty;
+        protected readonly DbSet<T> entities;
 
         public Repository(ApplicationContext context)
         {
             this.context = context;
             entities = context.Set<T>();
         }
-        public IEnumerable<T> GetAll(T t)
+        public virtual IEnumerable<T> GetAll()
         {
-            if (t is Group)
-                return entities.Include("Course").AsEnumerable();
-            if (t is Student)
-                return entities.Include("Group").AsEnumerable();
-
-            return entities.AsEnumerable();
+            Console.WriteLine("all");
+            return entities.ToList();
+            //return entities.AsEnumerable();
         }
         public T Get(int id)
         {
@@ -57,20 +53,6 @@ namespace Repository
                 throw new ArgumentNullException("entity");
             }
             entities.Remove(entity);
-            context.SaveChanges();
-        }
-        public void Remove(T entity)
-        {
-            if (entity == null)
-            {
-                throw new ArgumentNullException("entity");
-            }
-            entities.Remove(entity);
-            context.SaveChanges();
-        }
-
-        public void SaveChanges()
-        {
             context.SaveChanges();
         }
     }
