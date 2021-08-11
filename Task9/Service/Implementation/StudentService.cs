@@ -1,7 +1,8 @@
 ﻿using DataAccess;
 using Repository;
+using Service.Utilities;
 using Service.ViewModel;
-using System.Collections.Generic;
+using System.Linq;
 
 namespace Service
 {
@@ -16,37 +17,30 @@ namespace Service
             this.studentRepository = studentRepository;
         }
 
-        public IEnumerable<StudentViewModel> GetStudent()
+        public StudentsPresent GetStudent()
         {
-            List<StudentViewModel> result = new List<StudentViewModel>();
-            foreach (Student student in studentRepository.GetAll())
-            {
-                result.Add(new StudentViewModel(student.Id, student.FirstName, student.LastName, student.Group.Id));
-            }
+            return Mapper.GetDefaultStudentsPresent(studentRepository.GetAll());
+        }
+
+        public StudentsPresent GetStudent(int id)
+        {
+            Student student = studentRepository.Get(id);
+            StudentsPresent result = Mapper.GetDefaultStudentsPresent(student);
+            result.GroupId = student.Group.Id;
+            result.GroupName = student.Group.GroupName;
             return result;
         }
 
-        public StudentViewModel GetStudent(int id)
+        public void InsertStudent(StudentsPresent studentView)
         {
-            Student student = studentRepository.Get(id);
-            return new StudentViewModel(student.Id, student.FirstName, student.LastName, student.Group.Id);
-        }
-
-        public void InsertStudent(StudentViewModel studentView)
-        {
-            Student student = new Student();
-            student.FirstName = studentView.FirstName;
-            student.LastName = studentView.LastName;
+            Student student = Mapper.GetModelStudent(studentView.Students.First());
             student.Group = groupRepository.Get(studentView.GroupId);
             studentRepository.Insert(student);
         }
 
         public void UpdateStudent(StudentViewModel studentView)
         {
-            Student student = studentRepository.Get(studentView.Id);
-            student.FirstName = studentView.FirstName;
-            student.LastName = studentView.LastName;
-            studentRepository.Update(student);
+            studentRepository.Update(Mapper.GetModelStudent(studentView));
         }
 
         public void DeleteStudent(int id)
@@ -55,13 +49,13 @@ namespace Service
             studentRepository.Delete(student);
         }
 
-        public IEnumerable<StudentViewModel> GetStudentsByGroup(int id)
+        public StudentsPresent GetStudentsByGroup(int id)
         {
-            List<StudentViewModel> result = new List<StudentViewModel>();
-            foreach (Student student in groupRepository.Get(id).Students)
-            {
-                result.Add(new StudentViewModel(student.Id, student.FirstName, student.LastName, student.Group.Id));
-            }
+            Group group = groupRepository.Get(id);
+            StudentsPresent result = Mapper.GetDefaultStudentsPresent(group.Students);
+            result.CourseId = group.Course.Id;
+            result.GroupId = group.Id;
+            result.GroupName = group.GroupName;
             return result;
         }
     }

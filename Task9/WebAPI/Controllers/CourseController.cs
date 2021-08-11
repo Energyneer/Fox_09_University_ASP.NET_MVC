@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 using Service;
 using Service.ViewModel;
 
@@ -22,8 +23,9 @@ namespace WebAPI.Controllers
         [Route("/Error")]
         public IActionResult Error(string message)
         {
+            var exceptionHandlerPathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
             ErrorModel errorModel = new ErrorModel();
-            errorModel.ErrorCause = message;
+            errorModel.ErrorCause = exceptionHandlerPathFeature.Error.Message;
             return View(errorModel);
         }
 

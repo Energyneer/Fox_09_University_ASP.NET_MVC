@@ -1,25 +1,27 @@
 ﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-@model Service.ViewModel.StudentViewModel
+@model Service.ViewModel.StudentsPresent
 
 @{
-    ViewData["Title"] = "Edit " + Model.FirstName + " " + Model.LastName + " profile";
+    ViewData["Title"] = "Edit " + @Model.Students.First().FirstName + " " + Model.Students.First().LastName + " profile";
     Layout = "_Layout";
 }
 
-<form method="post" action="/Student/Edit">
+<form method="post" action="/Student/Edit/@Model.GroupId">
     <div class="form-group">
-        <input type="hidden" name="Id" value="@Model.Id" class="form-control" />
+        <input type="hidden" name="Id" value="@Model.Students.First().Id" class="form-control" />
     </div>
     <div class="form-group">
         <label class="control-label">Name:</label>
-        <input name="FirstName" value="@Model.FirstName" class="form-control" />
+        <input name="FirstName" value="@Model.Students.First().FirstName" class="form-control" />
     </div>
     <div class="form-group">
         <label class="control-label">Description:</label>
-        <input name="LastName" value="@Model.LastName" class="form-control" />
+        <input name="LastName" value="@Model.Students.First().LastName" class="form-control" />
     </div>
     <div class="form-group">
         <input type="submit" value="Submit" class="btn btn-success" />
     </div>
 </form>
+
+<a class="btn btn-light" asp-controller="Student" asp-action="Index" asp-route-id="@Model.GroupId">Back to Group</a>

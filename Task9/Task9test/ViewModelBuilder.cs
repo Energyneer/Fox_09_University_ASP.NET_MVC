@@ -21,7 +21,7 @@ namespace Task9test
         {
             GroupViewModel groupView = new GroupViewModel();
             groupView.GroupName = "TestGroupName";
-            groupView.CourseId = courseId;
+            //groupView.CourseId = courseId;
             return groupView;
         }
 
@@ -30,7 +30,7 @@ namespace Task9test
             StudentViewModel studentView = new StudentViewModel();
             studentView.FirstName = "TestFirstName";
             studentView.LastName = "TestLastName";
-            studentView.GroupId = groupId;
+            //studentView.GroupId = groupId;
             return studentView;
         }
     }

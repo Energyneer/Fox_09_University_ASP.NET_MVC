@@ -1,8 +1,8 @@
 ﻿using DataAccess;
 using Repository;
+using Service.Utilities;
 using Service.ViewModel;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Service
@@ -18,28 +18,24 @@ namespace Service
             this.groupRepository = groupRepository;
         }
 
-        public IEnumerable<GroupViewModel> GetGroup()
+        public GroupsPresent GetGroup()
         {
-            List<GroupViewModel> result = new List<GroupViewModel>();
-            foreach (Group group in groupRepository.GetAll())
-            {
-                //Console.WriteLine(">> " + group.Id + " " + group.GroupName + " " + group.CourseId + " " + group.Course);
-                result.Add(new GroupViewModel(group.Id, group.GroupName, group.Course.Id));
-            }
+            return Mapper.GetDefaultGroupsPresent(groupRepository.GetAll());
+        }
+
+        public GroupsPresent GetGroup(int id)
+        {
+            Group group = groupRepository.Get(id);
+            GroupsPresent result = Mapper.GetDefaultGroupsPresent(group);
+            result.CourseId = group.Course.Id;
+            result.CourseName = group.Course.CourseName;
             return result;
         }
 
-        public GroupViewModel GetGroup(int id)
+        public void InsertGroup(GroupsPresent groupsPresent)
         {
-            Group group = groupRepository.Get(id);
-            return new GroupViewModel(group.Id, group.GroupName, group.Course.Id);
-        }
-
-        public void InsertGroup(GroupViewModel groupView)
-        {
-            Group group = new Group();
-            group.GroupName = groupView.GroupName;
-            group.Course = courseRepository.Get(groupView.CourseId);
+            Group group = Mapper.GetModelGroup(groupsPresent.Groups.First());
+            group.Course = courseRepository.Get(groupsPresent.CourseId);
             groupRepository.Insert(group);
         }
 
@@ -60,13 +56,12 @@ namespace Service
             groupRepository.Delete(group);
         }
 
-        public IEnumerable<GroupViewModel> GetGroupsByCourse(int id)
+        public GroupsPresent GetGroupsByCourse(int id)
         {
-            List<GroupViewModel> result = new List<GroupViewModel>();
-            foreach (Group group in courseRepository.Get(id).Groups)
-            {
-                result.Add(new GroupViewModel(group.Id, group.GroupName, id));
-            }
+            Course course = courseRepository.Get(id);
+            GroupsPresent result = Mapper.GetDefaultGroupsPresent(course.Groups);
+            result.CourseId = course.Id;
+            result.CourseName = course.CourseName;
             return result;
         }
     }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.TestHost;
 using NUnit.Framework;
 using Service;
+using Service.Utilities;
 using Service.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -55,8 +56,9 @@ namespace Task9test
         public void TestCreateGroup()
         {
             GroupViewModel groupViewModel = ViewModelBuilder.GetGroup(CourseView.Id);
-            GroupService.InsertGroup(groupViewModel);
-            GroupView = GroupService.GetGroup().LastOrDefault();
+            GroupsPresent present = Mapper.GetDefaultGroupsPresent(groupViewModel, CourseView.Id);
+            GroupService.InsertGroup(present);
+            GroupView = GroupService.GetGroup().Groups.LastOrDefault();
             Assert.AreEqual(groupViewModel.GroupName, GroupView.GroupName);
         }
 
@@ -66,7 +68,7 @@ namespace Task9test
             string editGroupName = "TestGroupEdit2";
             GroupView.GroupName = editGroupName;
             GroupService.UpdateGroup(GroupView);
-            GroupView = GroupService.GetGroup().LastOrDefault();
+            GroupView = GroupService.GetGroup().Groups.LastOrDefault();
             Assert.AreEqual(editGroupName, GroupView.GroupName);
         }
 
@@ -74,8 +76,9 @@ namespace Task9test
         public void TestCreateStudent()
         {
             StudentViewModel studentViewModel = ViewModelBuilder.GetStudent(GroupView.Id);
-            StudentService.InsertStudent(studentViewModel);
-            StudentView = StudentService.GetStudent().LastOrDefault();
+            StudentsPresent present = Mapper.GetDefaultStudentsPresent(studentViewModel, GroupView.Id);
+            StudentService.InsertStudent(present);
+            StudentView = StudentService.GetStudent().Students.LastOrDefault();
             Assert.AreEqual(studentViewModel.FirstName, StudentView.FirstName);
         }
 
@@ -85,7 +88,7 @@ namespace Task9test
             string editStudentFirstName = "TestStudentEdit2";
             StudentView.FirstName = editStudentFirstName;
             StudentService.UpdateStudent(StudentView);
-            StudentView = StudentService.GetStudent().LastOrDefault();
+            StudentView = StudentService.GetStudent().Students.LastOrDefault();
             Assert.AreEqual(editStudentFirstName, StudentView.FirstName);
         }
 

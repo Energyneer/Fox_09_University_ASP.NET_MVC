@@ -1,5 +1,6 @@
 ﻿using DataAccess;
 using Repository;
+using Service.Utilities;
 using Service.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -21,32 +22,24 @@ namespace Service
             List<CourseViewModel> result = new List<CourseViewModel>();
             foreach (Course course in courseRepository.GetAll())
             {
-                result.Add(new CourseViewModel(course.Id, course.CourseName, course.CourseDesc));
+                result.Add(Mapper.GetViewCourse(course));
             }
             return result;
         }
 
         public CourseViewModel GetCourse(int id)
         {
-            Course course = courseRepository.Get(id);
-            return new CourseViewModel(course.Id, course.CourseName, course.CourseDesc);
+            return Mapper.GetViewCourse(courseRepository.Get(id));
         }
 
         public void InsertCourse(CourseViewModel courseView)
         {
-            Course course = new Course();
-            course.CourseName = courseView.CourseName;
-            course.CourseDesc = courseView.CourseDesc;
-            courseRepository.Insert(course);
+            courseRepository.Insert(Mapper.GetModelCourse(courseView));
         }
 
         public void UpdateCourse(CourseViewModel courseView)
         {
-            Course course = new Course();
-            course.Id = courseView.Id;
-            course.CourseName = courseView.CourseName;
-            course.CourseDesc = courseView.CourseDesc;
-            courseRepository.Update(course);
+            courseRepository.Update(Mapper.GetModelCourse(courseView));
         }
 
         public void DeleteCourse(int id)

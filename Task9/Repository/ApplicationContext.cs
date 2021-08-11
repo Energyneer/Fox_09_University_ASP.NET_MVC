@@ -12,7 +12,6 @@ namespace Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //base.OnModelCreating(modelBuilder);
             new CourseMap(modelBuilder.Entity<Course>());
             new GroupMap(modelBuilder.Entity<Group>());
             new StudentMap(modelBuilder.Entity<Student>());

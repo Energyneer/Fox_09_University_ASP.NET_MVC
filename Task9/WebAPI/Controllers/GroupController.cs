@@ -1,21 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Service;
+using Service.Utilities;
 using Service.ViewModel;
-using System;
 
 namespace WebAPI.Controllers
 {
     public class GroupController : Controller
     {
-        private readonly ICourseService courseService;
         private readonly IGroupService groupService;
-        private readonly IStudentService studentService;
 
-        public GroupController(ICourseService courseService, IGroupService groupService, IStudentService studentService)
+        public GroupController(IGroupService groupService)
         {
-            this.courseService = courseService;
             this.groupService = groupService;
-            this.studentService = studentService;
         }
 
         [Route("/Group")]
@@ -29,11 +25,11 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("/Group/Create")]
-        public IActionResult Create([Bind("GroupName,CourseId")] GroupViewModel groupView)
+        [Route("/Group/Create/{CourseId}")]
+        public IActionResult Create([Bind("GroupName")] GroupViewModel groupView, int CourseId)
         {
-            groupService.InsertGroup(groupView);
-            return Redirect("/Group?id=" + groupView.CourseId);
+            groupService.InsertGroup(Mapper.GetDefaultGroupsPresent(groupView, CourseId));
+            return Redirect("/Group?id=" + CourseId);
         }
 
         public IActionResult Edit(int? id)
@@ -42,12 +38,11 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("/Group/Edit")]
-        public IActionResult EditComfim([Bind("Id,GroupName,CourseId")] GroupViewModel groupView)
+        [Route("/Group/Edit/{CourseId?}")]
+        public IActionResult EditComfim([Bind("Id,GroupName")] GroupViewModel groupView, int? courseId)
         {
             groupService.UpdateGroup(groupView);
-            Console.WriteLine(">edit");
-            return Redirect("/Group?id=" + groupView.CourseId);
+            return Redirect("/Group" + (courseId.HasValue ? "?id=" + courseId.Value : ""));
         }
 
         [HttpPost, ActionName("Delete")]

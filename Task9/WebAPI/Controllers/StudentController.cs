@@ -1,17 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Service;
+using Service.Utilities;
 using Service.ViewModel;
 
 namespace WebAPI.Controllers
 {
     public class StudentController : Controller
     {
-        private readonly IGroupService groupService;
         private readonly IStudentService studentService;
 
-        public StudentController(IGroupService groupService, IStudentService studentService)
+        public StudentController(IStudentService studentService)
         {
-            this.groupService = groupService;
             this.studentService = studentService;
         }
 
@@ -26,11 +25,11 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("/Student/Create")]
-        public IActionResult Create([Bind("FirstName,LastName,GroupId")] StudentViewModel studentView)
+        [Route("/Student/Create/{GroupId}")]
+        public IActionResult Create([Bind("FirstName,LastName")] StudentViewModel studentView, int GroupId)
         {
-            studentService.InsertStudent(studentView);
-            return Redirect("/Student?id=" + studentView.GroupId);
+            studentService.InsertStudent(Mapper.GetDefaultStudentsPresent(studentView, GroupId));
+            return Redirect("/Student?id=" + GroupId);
         }
 
         public IActionResult Edit(int? id)
@@ -39,11 +38,11 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("/Student/Edit")]
-        public IActionResult EditComfim([Bind("Id,FirstName,LastName")] StudentViewModel studentView)
+        [Route("/Student/Edit/{GroupId?}")]
+        public IActionResult EditComfim([Bind("Id,FirstName,LastName")] StudentViewModel studentView, int? GroupId)
         {
             studentService.UpdateStudent(studentView);
-            return Redirect("/Student?id=" + studentView.GroupId);
+            return Redirect("/Student" + (GroupId.HasValue ? "?id=" + GroupId.Value : ""));
         }
 
         [HttpPost, ActionName("Delete")]

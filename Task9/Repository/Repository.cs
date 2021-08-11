@@ -18,9 +18,7 @@ namespace Repository
         }
         public virtual IEnumerable<T> GetAll()
         {
-            Console.WriteLine("all");
             return entities.ToList();
-            //return entities.AsEnumerable();
         }
         public T Get(int id)
         {
